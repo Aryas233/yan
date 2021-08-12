@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jp.milet.yr.org.mapper.DepartmentMapper">
+    <insert id="add">
+        INSERT INTO t_department (sn, name, state, manager_id, parent_id)
+        VALUES (
+                #{sn},
+                #{name},
+                #{state},
+                #{manager_id},
+                #{parent_id}
+               );
+    </insert>
+
+    <update id="update">
+        UPDATE t_department
+        SET
+            sn=#{sn},
+            name=#{name},
+            state=#{state},
+            manager_id=#{manager_id},
+            parent_id=#{parent_id}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delete">
+        DELETE
+        FROM t_department
+        WHERE id=#{id};
+    </delete>
+
+    <select id="findById" resultType="Department">
+        SELECT *
+        FROM t_department WHERE id=#{id};
+    </select>
+
+    <select id="findAll" resultType="Department">
+        SELECT *
+        FROM t_department;
+    </select>
+
+    <select id="findCount" resultType="long">
+        SELECT COUNT(*) FROM t_department d
+        LEFT JOIN t_employee e ON d.manager_id = e.id
+        LEFT JOIN t_department p ON d.parent_id = p.id
+
+        <include refid="query"></include>
+    </select>
+    <select id="queryPage" resultMap="DepartmentMap">
+        SELECT d.*, e.id eid, e.username, p.id pid, p.name pname FROM t_department d
+        LEFT JOIN t_employee e ON d.manager_id = e.id
+        LEFT JOIN t_department p ON d.parent_id = p.id
+        <include refid="query"></include>
+        LIMIT #{start}, #{pageSize}
+    </select>
+    <resultMap id="DepartmentMap" type="Department">
+        <id column="id" property="id"></id>
+        <result column="sn" property="sn"></result>
+        <result column="name" property="name"></result>
+        <result column="state" property="state"></result>
+        <result column="manager_id" property="manager_id"></result>
+        <result column="parent_id" property="parent_id"></result>
+        <association property="manager" javaType="Employee">
+            <id column="eid" property="id"></id>
+            <result column="username" property="username"></result>
+        </association>
+        <association property="parent" javaType="Department">
+            <id column="pid" property="id"></id>
+            <result column="pname" property="name"></result>
+        </association>
+    </resultMap>
+    <sql id="query">
+        <where>
+            <if test="keywords != null and keywords != '' ">
+                AND d.name LIKE CONCAT("%", #{keywords}, "%")
+            </if>
+        </where>
+    </sql>
+    <delete id="batchDelete">
+        DELETE
+        FROM t_department
+        WHERE id IN (
+        <foreach collection="array" item="id" separator=",">
+            #{id}
+        </foreach>)
+    </delete>
+</mapper>

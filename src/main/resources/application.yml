@@ -1,0 +1,10 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost/pethome?useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: 199812
+mybatis:
+  type-aliases-package: jp.milet.yr.org.domain

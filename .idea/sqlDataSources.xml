@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDataSourceStorage">
+    <option name="dataSources">
+      <list>
+        <State>
+          <option name="id" value="18bd785e-a74a-4320-b928-928b35f023ba" />
+          <option name="name" value="pethome" />
+          <option name="urls">
+            <array>
+              <option value="file://$PROJECT_DIR$/../../../../JAVA/step3/day10-YYYY-MM-dd-SpringBoot全栈-day01-项目介绍-项目搭建/resources/pethome.sql" />
+            </array>
+          </option>
+        </State>
+      </list>
+    </option>
+  </component>
+</project>

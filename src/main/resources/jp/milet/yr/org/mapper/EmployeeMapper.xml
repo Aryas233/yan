@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jp.milet.yr.org.mapper.EmployeeMapper">
+    <insert id="add">
+        INSERT INTO t_employee (username, email, phone, password, age, state)
+        VALUES (
+            #{username},
+            #{email},
+            #{phone},
+            #{password},
+            #{age},
+            #{state}
+               );
+    </insert>
+
+    <update id="update">
+        UPDATE t_employee
+        SET
+            username = #{username},
+            email = #{email},
+            phone = #{phone},
+            password = #{password},
+            age = #{age},
+            state = #{state}
+        WHERE id = #{id}
+    </update>
+    <delete id="delete">
+        DELETE
+        FROM t_employee
+        WHERE id = #{id};
+    </delete>
+
+    <select id="findById" resultType="Employee">
+        SELECT *
+        FROM t_employee WHERE id = #{id};
+    </select>
+    <select id="findAll" resultType="Employee">
+        SELECT *
+        FROM t_employee;
+    </select>
+
+    <select id="findCount" resultType="long">
+        SELECT count(*)
+        FROM t_employee
+        <include refid="empQuery"></include>
+    </select>
+
+    <select id="queryPage" resultType="Employee">
+        SELECT * FROM t_employee
+        <include refid="empQuery"></include>
+        LIMIT #{start}, #{pageSize}
+    </select>
+    <sql id="empQuery">
+        <where>
+            <if test="keywords != null and keywords != '' ">
+                AND username like concat('%', #{keywords}, '%')
+            </if>
+        </where>
+    </sql>
+
+    <delete id="batchDelete">
+        DELETE
+        FROM t_employee
+        WHERE id IN (
+            <foreach collection="array" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+    </delete>
+    <!-- 删除多对多关系表中的数据 -->
+    <delete id="deleteConnect">
+        DELETE FROM t_employee_role WHERE employee_id = #{id};
+
+    </delete>
+</mapper>
